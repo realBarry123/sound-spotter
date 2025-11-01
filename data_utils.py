@@ -1,14 +1,15 @@
+
 import torch, torchaudio, os, tqdm, shutil, random, gc
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import torch
 import torchaudio
 
 def wave_to_mel_spec(waveform: torch.Tensor, n_fft=1024, hop_length=256, n_mels=64):
-    """
-    Convert waveform [C, T] into log-Mel spectrogram [C, n_mels, T]
-    """
+    
+    #Convert waveform [C, T] into log-Mel spectrogram [C, n_mels, T]
     # Compute STFT
+
     spec = torch.stft(
         waveform, n_fft=n_fft, hop_length=hop_length,
         return_complex=True, window=torch.hann_window(n_fft)
@@ -29,10 +30,10 @@ def wave_to_mel_spec(waveform: torch.Tensor, n_fft=1024, hop_length=256, n_mels=
     return log_mel_spec  # [C, n_mels, T]
 
 def mel_spec_to_wave(mel_spec, n_fft=1024, hop_length=256, n_mels=64, n_iter=32):
-    """
-    Convert log-Mel spectrogram [C, n_mels, T] back to waveform [C, T]
-    (approximate using Griffin-Lim)
-    """
+    
+    #Convert log-Mel spectrogram [C, n_mels, T] back to waveform [C, T]
+    #(approximate using Griffin-Lim)
+    
     # Undo log scaling
     mel_spec = torch.expm1(mel_spec)  # log1p -> x
     
@@ -51,13 +52,13 @@ def mel_spec_to_wave(mel_spec, n_fft=1024, hop_length=256, n_mels=64, n_iter=32)
     return waveform
 '''
 def load_wav_to_mel_spec(path: str) -> torch.Tensor: 
-    """Load a waveform from the directory `path` and return a spectrogram (size [C, F, T])."""
+    Load a waveform from the directory `path` and return a spectrogram (size [C, F, T]).
     waveform, sample_rate = torchaudio.load(path)
     spec = wave_to_mel_spec(waveform)
     return spec
 
 def save_mel_spec_as_wav(spec: torch.Tensor, path: str, sample_rate: int=44100):
-    """Save a spectrogram as a `.wav` file in directory `path`."""
+    Save a spectrogram as a `.wav` file in directory `path`.
     waveform = mel_spec_to_wave(spec)
     if len(list(waveform.shape)) == 1:
         waveform = torch.unsqueeze(waveform, 0)
@@ -67,7 +68,7 @@ def save_mel_spec_as_wav(spec: torch.Tensor, path: str, sample_rate: int=44100):
         sample_rate=sample_rate
     )
 '''
-
+'''
 def plot_spectrogram(spec: torch.Tensor, title: str="Spectrogram") -> None:
     if isinstance(spec, torch.Tensor):
         spec = spec.squeeze(0).cpu().numpy()
@@ -80,9 +81,9 @@ def plot_spectrogram(spec: torch.Tensor, title: str="Spectrogram") -> None:
     plt.colorbar(format="%+2.0f dB")
     plt.tight_layout()
     plt.show()
-
+'''
 def wavs_to_tensors(path_in: str, path_out: str) -> None:
-    """Convert all `.wav` files in directory `path_in` to `.pt` files in directory `path_out`."""
+    #Convert all `.wav` files in directory `path_in` to `.pt` files in directory `path_out`.
     wav_files = [f for f in os.listdir(path_in) if f.endswith('.wav')]
     for filename in tqdm.tqdm(wav_files):
         if filename.endswith('.wav'):
@@ -90,7 +91,7 @@ def wavs_to_tensors(path_in: str, path_out: str) -> None:
             output_filename = os.path.splitext(filename)[0] + '.pt'
             output_path = os.path.join(path_out, output_filename)
 
-            tensor = load_wav(input_path)
+            #tensor = load_wav(input_path)
             torch.save(tensor, output_path)
 
             # Explicit memory cleanup
