@@ -5,7 +5,7 @@ from data_utils import *
 F = 64
 B = 1
 
-MODEL_PATH = "models/model_square_q.pt"
+MODEL_PATH = "models/model1.pt"
 
 model = SoundSpotter(F, B).to("cpu")
 state_dict, epoch = torch.load(MODEL_PATH)

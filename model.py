@@ -75,7 +75,7 @@ class SoundSpotter(nn.Module):
         
         # (B, 1, T')
         heatmap = torch.cat(heatmap_list, dim=0)
-        heatmap = heatmap # Note: nobody knows why this works
+        heatmap = -heatmap # Note: nobody knows why this works
         heatmap = self.heatmap_sigmoid(heatmap)
         count = heatmap.squeeze(1).sum(dim=-1, keepdim=False) # (B)
 

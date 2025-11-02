@@ -16,12 +16,12 @@ B = 1
 SAMPLE_RATE = 44100
 DEVICE = "cpu"
 
-NUM_EPOCHS = 16
+NUM_EPOCHS = 64
 
 TEST_SIZE = 5
 
 SAVING = True
-SAVE_PATH = "models/model_square_q.pt"
+SAVE_PATH = "models/model1.pt"
 
 model = SoundSpotter(F, B).to(DEVICE)
 
