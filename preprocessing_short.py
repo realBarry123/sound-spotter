@@ -78,11 +78,12 @@ def preprocess():
 
     dict = create_dict()
     
+    """
     for cat in categories:
         dir_name = "dataset_wav_files/" + cat
         os.mkdir(dir_name)
         dir_name = "dataset_pt_files/" + cat
-        os.mkdir(dir_name)
+        os.mkdir(dir_name)"""
 
 
     input_path = "ESC-50-master/ESC-50-master/audio/"
@@ -100,12 +101,13 @@ def preprocess():
             save_tensor_as_wav(output_wav, first_trimmed, sample_rate)
 
             output_tensor = "dataset_pt_files/" + dict[key] + "/modified_tensor_" + key + ".pt"
-            save_tensor(output_tensor, tensor)
+            first_trimmed = wave_to_mel_spec(first_trimmed)
+            save_tensor(output_tensor, first_trimmed)
 
 
 
 
-preprocess()
+#preprocess()
 
 """
 def test_trim_leading_space():
