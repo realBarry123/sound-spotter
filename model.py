@@ -53,9 +53,7 @@ class SoundSpotter(nn.Module):
         heatmap_list = []
         for i in range(self.B):
             # x[i]: (F, T), query[i]: (F, K)
-            conv_out = torch.nn.functional.conv1d(
-                x[i:i+1], weight=query[i:i+1]
-            )
+            conv_out = torch.nn.functional.conv1d(input=x[i:i+1], weight=query[i:i+1])
             heatmap_list.append(conv_out)
         
         # (B, 1, T')

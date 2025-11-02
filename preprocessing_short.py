@@ -46,7 +46,7 @@ def sort_sounds():
 
     
 def create_dict() -> dict:
-    filepath = 'ESC-50-master/ESC-50-master/meta/esc50.csv'
+    filepath = 'ESC-50-master/meta/esc50.csv'
     file_name_cat = {}
 
     csv_file = open(filepath, 'r', newline = '')
@@ -85,7 +85,7 @@ def preprocess():
         os.mkdir(dir_name)
 
 
-    input_path = "ESC-50-master/ESC-50-master/audio/"
+    input_path = "ESC-50-master/audio/"
 
     for key in dict.keys():
 
