@@ -1,5 +1,6 @@
 import torch, torchaudio, os, tqdm, gc
 import soundfile
+import matplotlib.pyplot as plt
 
 def load_wav_to_tensor(path: str) -> (torch.Tensor, int):
     wave, sample_rate = soundfile.read(path)
@@ -13,6 +14,19 @@ def save_tensor_as_wav(path: str, tensor: torch.Tensor, sample_rate: int):
 
 def save_tensor(path: str, tensor: torch.Tensor):
     torch.save(tensor, path)
+
+def plot_spectrogram(spec: torch.Tensor, title: str="Spectrogram") -> None:
+    if isinstance(spec, torch.Tensor):
+        spec = spec.squeeze(0).cpu().numpy()
+    
+    plt.figure(figsize=(10, 4))
+    plt.imshow(spec, origin="lower", aspect="auto", cmap="magma")
+    plt.title(title)
+    plt.xlabel("Time")
+    plt.ylabel("Frequency (Mel bins)")
+    plt.colorbar(format="%+2.0f dB")
+    plt.tight_layout()
+    plt.show()
 
 def wave_to_mel_spec(waveform: torch.Tensor, n_fft=1024, hop_length=256, n_mels=64):
     # Note: upsamples by approx hop_length
@@ -60,6 +74,7 @@ def test_mel_reconstruction():
     wav, sample_rate = load_wav_to_tensor("test_in.wav")
     spec = wave_to_mel_spec(wav)
     wav = mel_spec_to_wave(spec)
+    print(sample_rate)
     save_tensor_as_wav("test_out.wav", wav, sample_rate)
 
 # test_mel_reconstruction()
