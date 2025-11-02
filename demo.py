@@ -5,15 +5,15 @@ from data_utils import *
 F = 64
 B = 1
 
-MODEL_PATH = "models/model1.pt"
+MODEL_PATH = f"models/{input("Model name: ")}.pt"
 
 model = SoundSpotter(F, B).to("cpu")
 state_dict, epoch = torch.load(MODEL_PATH)
 model.load_state_dict(state_dict)
 model.eval()
 
-LONG_PATH = "test_audio/clap.wav"
-SHORT_PATH = "test_audio/clap_short.wav"
+LONG_PATH = f"test_audio/{input("Long audio: ")}.wav"
+SHORT_PATH = f"test_audio/{input("Example audio: ")}.wav"
 
 resampler = torchaudio.transforms.Resample(orig_freq=48000, new_freq=44100)
 
