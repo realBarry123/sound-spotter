@@ -50,11 +50,19 @@ def mel_spec_to_wave(mel_spec, n_fft=1024, hop_length=256, n_mels=64, n_iter=32)
     
     # Griffin-Lim to estimate phase
     griffin_lim = torchaudio.transforms.GriffinLim(
-        n_fft=n_fft, hop_length=hop_length, window_fn=torch.hann_window, n_iter=n_iter
+        n_fft=n_fft, hop_length=hop_length, window_fn=torch.hann_window, n_iter=n_iter, power=1
     )
     waveform = griffin_lim(lin_spec)  # [C, T]
     
     return waveform
+
+def test_mel_reconstruction():
+    wav, sample_rate = load_wav_to_tensor("test_in.wav")
+    spec = wave_to_mel_spec(wav)
+    wav = mel_spec_to_wave(spec)
+    save_tensor_as_wav("test_out.wav", wav, sample_rate)
+
+# test_mel_reconstruction()
 
 def wavs_to_tensors(path_in: str, path_out: str) -> None:
     #Convert all `.wav` files in directory `path_in` to `.pt` files in directory `path_out`.
