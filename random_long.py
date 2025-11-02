@@ -52,7 +52,7 @@ def create_random_long(num_occurances: int, cat: str) -> torch.Tensor:
         space_occupied.append((r, r + short_t_len))
         long_tensor = add_tensors(long_tensor, short_tensor, r)
 
-    for i in range(num_occurances):
+    for i in range(num_distractions):
         dir_path = "dataset_pt_files/" + random.choice(list(categories))
         random_dist = random.choice(os.listdir(dir_path))
         dist_tensor = torch.load(dir_path + "/" + random_dist)
