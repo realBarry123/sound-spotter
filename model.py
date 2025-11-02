@@ -34,11 +34,15 @@ class SoundSpotter(nn.Module):
             padding="same"
         )
 
+        self.short_relu = nn.LeakyReLU()
+        self.long_relu = nn.LeakyReLU()
+
         self.sigmoid = nn.Sigmoid()
 
     def to_query(self, short: torch.Tensor):
         # (B, 1, F, T)
         short = self.short_conv1(short)
+        short = self.short_relu(short)
         short = self.short_conv2(short) # (B, 16, F, T)
         short = short.mean(dim=-1, keepdim=False) # (B, 16, F)
         short = short.permute(0, 2, 1) # (B, F, T=16)
@@ -47,6 +51,7 @@ class SoundSpotter(nn.Module):
     def forward(self, x: torch.Tensor, short: torch.Tensor):
         # (B, 1, F, T)
         x = self.long_conv1(x)
+        x = self.long_relu(x)
         x = self.long_conv2(x)
 
         query = self.to_query(short)
