@@ -34,6 +34,8 @@ class SoundSpotter(nn.Module):
             padding="same"
         )
 
+        self.sigmoid = nn.Sigmoid()
+
     def to_query(self, short: torch.Tensor):
         # (B, 1, F, T)
         short = self.short_conv1(short)
@@ -50,6 +52,9 @@ class SoundSpotter(nn.Module):
         query = self.to_query(short)
         x = x.squeeze(1) # (B, F, T)
 
+        x = torch.nn.functional.normalize(x, dim=1)
+        query = torch.nn.functional.normalize(query, dim=1)
+
         heatmap_list = []
         for i in range(self.B):
             # x[i]: (F, T), query[i]: (F, K)
@@ -58,6 +63,7 @@ class SoundSpotter(nn.Module):
         
         # (B, 1, T')
         heatmap = torch.cat(heatmap_list, dim=0)
+        heatmap = self.sigmoid(heatmap)
         count = heatmap.squeeze(1).sum(dim=-1, keepdim=False) # (B)
         return count
 
