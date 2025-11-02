@@ -2,8 +2,12 @@ import os, random
 import torch
 from tqdm import tqdm
 from model import SoundSpotter
-from random_long import create_random_long, categories
-from add_noise import add_noise
+from random_long import create_random_long
+from metadata import longs, categories
+
+def add_noise(short: torch.Tensor):
+    noise = torch.load("archive_pt/" + random.choice(list(longs)) + ".pt")[:,:, :short.shape[2]]
+    return torch.add(short, noise)
 
 LR = 0.01
 F = 64
@@ -11,11 +15,11 @@ B = 1
 SAMPLE_RATE = 44100
 DEVICE = "cpu"
 
-NUM_EPOCHS = 4
+NUM_EPOCHS = 16
 
 TEST_SIZE = 5
 
-SAVING = False
+SAVING = True
 SAVE_PATH = "models/model.pt"
 
 model = SoundSpotter(F, B).to(DEVICE)
