@@ -6,9 +6,7 @@ import torch
 import torchaudio
 
 def wave_to_mel_spec(waveform: torch.Tensor, n_fft=1024, hop_length=256, n_mels=64):
-    
-    #Convert waveform [C, T] into log-Mel spectrogram [C, n_mels, T]
-    # Compute STFT
+    # Note: upsamples by approx hop_length
 
     spec = torch.stft(
         waveform, n_fft=n_fft, hop_length=hop_length,
@@ -30,9 +28,7 @@ def wave_to_mel_spec(waveform: torch.Tensor, n_fft=1024, hop_length=256, n_mels=
     return log_mel_spec  # [C, n_mels, T]
 
 def mel_spec_to_wave(mel_spec, n_fft=1024, hop_length=256, n_mels=64, n_iter=32):
-    
-    #Convert log-Mel spectrogram [C, n_mels, T] back to waveform [C, T]
-    #(approximate using Griffin-Lim)
+    # Note: upsamples by approx hop_length
     
     # Undo log scaling
     mel_spec = torch.expm1(mel_spec)  # log1p -> x
