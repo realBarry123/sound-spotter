@@ -1,5 +1,9 @@
 # Custom
 ESC-50-master
+archive
+archive_pt
+dataset_pt_files
+dataset_wav_files
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
