@@ -42,7 +42,7 @@ def create_random_long(num_occurances: int, cat: str) -> torch.Tensor:
 
     
 
-create_random_long(5, "airplane")
+# create_random_long(5, "airplane")
 
 
     
