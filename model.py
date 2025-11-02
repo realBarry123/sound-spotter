@@ -37,7 +37,11 @@ class SoundSpotter(nn.Module):
         self.short_relu = nn.LeakyReLU()
         self.long_relu = nn.LeakyReLU()
 
-        self.sigmoid = nn.Sigmoid()
+        # self.query_sigmoid = nn.Sigmoid()
+        self.heatmap_sigmoid = nn.Sigmoid()
+
+        # self.scale = nn.Parameter(torch.tensor(0.01))
+        self.scale = 0.01
 
     def to_query(self, short: torch.Tensor):
         # (B, 1, F, T)
@@ -58,7 +62,9 @@ class SoundSpotter(nn.Module):
         x = x.squeeze(1) # (B, F, T)
 
         x = torch.nn.functional.normalize(x, dim=1)
+        # query = query - query.mean(dim=1, keepdim=True) # zero center
         query = torch.nn.functional.normalize(query, dim=1)
+        # query = self.query_sigmoid(query)
 
         heatmap_list = []
         for i in range(self.B):
@@ -68,8 +74,10 @@ class SoundSpotter(nn.Module):
         
         # (B, 1, T')
         heatmap = torch.cat(heatmap_list, dim=0)
-        heatmap = self.sigmoid(heatmap)
+        heatmap = -heatmap # Note: nobody knows why this works
+        heatmap = self.heatmap_sigmoid(heatmap)
         count = heatmap.squeeze(1).sum(dim=-1, keepdim=False) # (B)
+        count = count * self.scale
         return count, heatmap
 
 def test_model_shape():
