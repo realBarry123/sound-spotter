@@ -70,7 +70,7 @@ class SoundSpotter(nn.Module):
         heatmap = torch.cat(heatmap_list, dim=0)
         heatmap = self.sigmoid(heatmap)
         count = heatmap.squeeze(1).sum(dim=-1, keepdim=False) # (B)
-        return count
+        return count, heatmap
 
 def test_model_shape():
     F = 128
@@ -78,7 +78,5 @@ def test_model_shape():
     x = torch.zeros((B, 1, F, 49298))
     short = torch.zeros((B, 1, F, 100))
     model = SoundSpotter(F, B)
-    y = model(x, short)
+    y, heatmap = model(x, short)
     print(y.shape)
-
-test_model_shape()

@@ -28,6 +28,16 @@ def plot_spectrogram(spec: torch.Tensor, title: str="Spectrogram") -> None:
     plt.tight_layout()
     plt.show()
 
+def plot_heatmap(heatmap: torch.Tensor, title: str="Heatmap"):
+    plt.figure(figsize=(10, 4))
+    plt.imshow(heatmap.detach().numpy(), cmap='magma', aspect='auto')
+    plt.title(title)
+    plt.yticks([])  # remove y-axis
+    plt.xlabel("Time / Index")
+    plt.colorbar(label="Intensity")
+    plt.show()
+
+
 def wave_to_mel_spec(waveform: torch.Tensor, n_fft=1024, hop_length=256, n_mels=64):
     # Note: upsamples by approx hop_length
 
