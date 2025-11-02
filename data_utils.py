@@ -1,9 +1,18 @@
+import torch, torchaudio, os, tqdm, gc
+import soundfile
 
-import torch, torchaudio, os, tqdm, shutil, random, gc
-#import matplotlib.pyplot as plt
+def load_wav_to_tensor(path: str) -> (torch.Tensor, int):
+    wave, sample_rate = soundfile.read(path)
+    wave = torch.from_numpy(wave).float()
+    wave = wave.unsqueeze(0)
+    return wave, int(sample_rate)
 
-import torch
-import torchaudio
+def save_tensor_as_wav(path: str, tensor: torch.Tensor, sample_rate: int):
+    tensor = tensor.squeeze(0)
+    soundfile.write(path, tensor, sample_rate)
+
+def save_tensor(path: str, tensor: torch.Tensor):
+    torch.save(tensor, path)
 
 def wave_to_mel_spec(waveform: torch.Tensor, n_fft=1024, hop_length=256, n_mels=64):
     # Note: upsamples by approx hop_length
@@ -46,38 +55,7 @@ def mel_spec_to_wave(mel_spec, n_fft=1024, hop_length=256, n_mels=64, n_iter=32)
     waveform = griffin_lim(lin_spec)  # [C, T]
     
     return waveform
-'''
-def load_wav_to_mel_spec(path: str) -> torch.Tensor: 
-    Load a waveform from the directory `path` and return a spectrogram (size [C, F, T]).
-    waveform, sample_rate = torchaudio.load(path)
-    spec = wave_to_mel_spec(waveform)
-    return spec
 
-def save_mel_spec_as_wav(spec: torch.Tensor, path: str, sample_rate: int=44100):
-    Save a spectrogram as a `.wav` file in directory `path`.
-    waveform = mel_spec_to_wave(spec)
-    if len(list(waveform.shape)) == 1:
-        waveform = torch.unsqueeze(waveform, 0)
-    torchaudio.save(
-        uri=path,
-        src=waveform,
-        sample_rate=sample_rate
-    )
-'''
-'''
-def plot_spectrogram(spec: torch.Tensor, title: str="Spectrogram") -> None:
-    if isinstance(spec, torch.Tensor):
-        spec = spec.squeeze(0).cpu().numpy()
-    
-    plt.figure(figsize=(10, 4))
-    plt.imshow(spec, origin="lower", aspect="auto", cmap="magma")
-    plt.title(title)
-    plt.xlabel("Time")
-    plt.ylabel("Frequency (Mel bins)")
-    plt.colorbar(format="%+2.0f dB")
-    plt.tight_layout()
-    plt.show()
-'''
 def wavs_to_tensors(path_in: str, path_out: str) -> None:
     #Convert all `.wav` files in directory `path_in` to `.pt` files in directory `path_out`.
     wav_files = [f for f in os.listdir(path_in) if f.endswith('.wav')]

@@ -3,19 +3,7 @@ import random
 import numpy, torch, torchaudio, soundfile
 import csv
 import os
-
-global categories
-categories = {'clapping', 'thunderstorm', 'siren', 'door_wood_knock',
-               'coughing', 'airplane', 'laughing', 'drinking_sipping',
-                 'helicopter', 'chainsaw', 'sneezing', 'car_horn', 'hen',
-                   'toilet_flush', 'rain', 'frog', 'glass_breaking', 'vacuum_cleaner',
-                     'brushing_teeth', 'crow', 'cat', 'crying_baby', 'wind',
-                       'keyboard_typing', 'snoring', 'washing_machine', 'pouring_water',
-                         'sheep', 'pig', 'can_opening', 'mouse_click', 'water_drops',
-                           'train', 'clock_alarm', 'engine', 'hand_saw', 'breathing',
-                        'cow', 'sea_waves', 'crackling_fire', 'crickets', 'fireworks',
-                         'insects', 'clock_tick', 'dog', 'chirping_birds', 'footsteps',
-                           'rooster', 'church_bells', 'door_wood_creaks'}
+from metadata import categories
 
 def trim_leading_space(input_wav: torch.Tensor, threshold: float) -> torch.Tensor:
     for i in range(input_wav.shape[0]):
@@ -27,23 +15,6 @@ def trim_leading_space(input_wav: torch.Tensor, threshold: float) -> torch.Tenso
 def trim_first(input_wav: torch.Tensor, minimum: float, maximum: float, sample_rate) -> torch.Tensor:
     out_samples = int(random.uniform(minimum, maximum) * sample_rate)
     return input_wav[:, :out_samples]
-
-def load_wav_to_tensor(path: str) -> (torch.Tensor, int):
-    wave, sample_rate = soundfile.read(path)
-    wave = torch.from_numpy(wave).float()
-    wave = wave.unsqueeze(0)
-    return wave, int(sample_rate)
-
-def save_tensor_as_wav(path: str, tensor: torch.Tensor, sample_rate: int):
-    tensor = tensor.squeeze(0)
-    soundfile.write(path, tensor, sample_rate)
-
-def save_tensor(path: str, tensor: torch.Tensor):
-    torch.save(tensor, path)
-
-def sort_sounds():
-    pass
-
     
 def create_dict() -> dict:
     filepath = 'ESC-50-master/meta/esc50.csv'
@@ -104,10 +75,21 @@ def preprocess():
             first_trimmed = wave_to_mel_spec(first_trimmed)
             save_tensor(output_tensor, first_trimmed)
 
+def save_wavs_as_tensors():
 
+    dir = "archive/"
+    output_dir = "archive_pt/"
 
+    for filename in os.listdir(dir):
+        wave, sample_rate = soundfile.read(dir + filename)
+        wave = torch.from_numpy(wave).float()
+        wave = wave.unsqueeze(0)
+        tensor = wave_to_mel_spec(wave)
 
-#preprocess()
+        torch.save(tensor, output_dir + filename[:-4] + ".pt")
+
+# preprocess()
+# save_wavs_as_tensors()
 
 """
 def test_trim_leading_space():

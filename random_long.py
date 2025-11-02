@@ -5,39 +5,19 @@ import torch.nn.functional as F
 import csv
 import os
 from preprocessing_short import *
+from metadata import longs, categories
 
 sec_len = 44100
-
-categories = {'clapping', 'thunderstorm', 'siren', 'door_wood_knock',
-               'coughing', 'airplane', 'laughing', 'drinking_sipping',
-                 'helicopter', 'chainsaw', 'sneezing', 'car_horn', 'hen',
-                   'toilet_flush', 'rain', 'frog', 'glass_breaking', 'vacuum_cleaner',
-                     'brushing_teeth', 'crow', 'cat', 'crying_baby', 'wind',
-                       'keyboard_typing', 'snoring', 'washing_machine', 'pouring_water',
-                         'sheep', 'pig', 'can_opening', 'mouse_click', 'water_drops',
-                           'train', 'clock_alarm', 'engine', 'hand_saw', 'breathing',
-                        'cow', 'sea_waves', 'crackling_fire', 'crickets', 'fireworks',
-                         'insects', 'clock_tick', 'dog', 'chirping_birds', 'footsteps',
-                           'rooster', 'church_bells', 'door_wood_creaks'}
-
-longs = {'wind', 'office', 'rain', 'construction', 'brown',
-          'rainforest', 'planecabin', 'train', 'fan', 'city',
-            'campfire', 'starship', 'beach', 'static', 'water',
-              'engine', 'library', 'white', 'thunderstorm',
-                'forest', 'river', 'factory'}
-
 
 def add_tensors(T1: torch.Tensor, T2: torch.Tensor, index: int) -> torch.Tensor:
     c1, f1, t1 = T1.shape
     c2, f2, t2 = T2.shape
-
 
     if (t1 + index) <= (t2):
         T1 = F.pad(T1, (index, t2 - t1 - index))
     else:
         T1 = F.pad(T1, (index, 0))
         T2 = F.pad(T2, (0, index + t1 - t2)) 
-
     
     combined = T2 + T1
     return combined / combined.abs().max()
@@ -90,8 +70,3 @@ def test_create_random_long():
     save_tensor_as_wav("test.wav", wave, 44100)
 
 #test_create_random_long()
-
-
-
-
-    
