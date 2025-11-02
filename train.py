@@ -16,12 +16,12 @@ B = 1
 SAMPLE_RATE = 44100
 DEVICE = "cpu"
 
-NUM_EPOCHS = 32
+NUM_EPOCHS = 16
 
-TEST_SIZE = 7
+TEST_SIZE = 5
 
 SAVING = True
-SAVE_PATH = "models/model.pt"
+SAVE_PATH = "models/model_square_q.pt"
 
 model = SoundSpotter(F, B).to(DEVICE)
 
@@ -53,9 +53,7 @@ for epoch in range(NUM_EPOCHS):
 
         y_pred, heatmap = model(x, short)
 
-        #plot_spectrogram(x[0], f"Spectrograph (y={y})")
-        #plot_heatmap(heatmap[0], f"Heatmap (y_pred={y_pred[0].item()})")
-        #exit()
+        # plot_spectrogram(x[0], f"Spectrograph (y={y})"); plot_heatmap(heatmap[0], f"Heatmap (y_pred={y_pred[0].item()})"); exit()
 
         y = torch.tensor([[y]]).float()
 
