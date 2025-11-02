@@ -30,7 +30,7 @@ def check_interval_occupied(intervals, s, e):
         return False
 
 def create_random_long(num_occurances: int, cat: str) -> torch.Tensor:
-    num_distractions = random.randint(2, 7)
+    num_distractions = random.randint(8, 12) - num_occurances
     ALPHA = 0.4 # how loud the occurances and distractions are
 
     random_long = random.choice(list(longs))
